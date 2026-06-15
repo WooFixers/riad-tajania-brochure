@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { LanguageProvider, useLanguage, languages } from "@/lib/translations";
 
 import logoImg from "@/assets/riad-tajania.png";
 import heroBgLocal from "@/assets/herobg.webp";
@@ -47,6 +48,24 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
+    <LanguageProvider>
+      <IndexContent />
+    </LanguageProvider>
+  );
+}
+
+function IndexContent() {
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    document.title = t("meta.title");
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", t("meta.description"));
+    }
+  }, [t]);
+
+  return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Nav />
       <Hero />
@@ -69,13 +88,15 @@ function Index() {
 
 function Nav() {
   const [isOpen, setIsOpen] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+
   const links = [
-    ["About", "#about"],
-    ["Suites", "#suites"],
-    ["Spaces", "#spaces"],
-    ["Experiences", "#experiences"],
-    ["Partnership", "#partnership"],
-    ["Contact", "#contact"],
+    [t("nav.about"), "#about"],
+    [t("nav.suites"), "#suites"],
+    [t("nav.spaces"), "#spaces"],
+    [t("nav.experiences"), "#experiences"],
+    [t("nav.partnership"), "#partnership"],
+    [t("nav.contact"), "#contact"],
   ];
 
   return (
@@ -101,11 +122,32 @@ function Nav() {
         </nav>
         
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <div className="flex items-center gap-2 mr-2 border-r border-border/40 pr-4">
+            {languages.map((l, i) => (
+              <span key={l.code} className="flex items-center">
+                <button
+                  onClick={() => setLang(l.code)}
+                  className={`text-[10px] tracking-wider uppercase transition-colors cursor-pointer font-sans ${
+                    lang === l.code
+                      ? "text-terracotta font-semibold"
+                      : "text-ink/50 hover:text-terracotta"
+                  }`}
+                >
+                  {l.label}
+                </button>
+                {i < languages.length - 1 && (
+                  <span className="text-ink/20 text-[9px] ml-2 font-sans">·</span>
+                )}
+              </span>
+            ))}
+          </div>
+
           <a
             href="#partnership"
-            className="hidden md:inline-flex items-center gap-2 border border-forest-deep px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-all text-forest-deep hover:bg-forest-deep hover:text-ivory"
+            className="hidden md:inline-flex items-center gap-2 border border-terracotta px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-all text-terracotta hover:bg-terracotta hover:text-ivory"
           >
-            Become a Partner
+            {t("nav.becomePartner")}
           </a>
           
           <button
@@ -137,7 +179,25 @@ function Nav() {
               <X className="size-6" />
             </button>
           </div>
-          <nav className="flex flex-col items-center justify-center flex-grow gap-8 mt-12">
+
+          {/* Mobile Language Switcher */}
+          <div className="flex items-center justify-center gap-4 mt-6 border-b border-border/40 pb-4">
+            {languages.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setLang(l.code)}
+                className={`text-xs tracking-widest uppercase transition-colors cursor-pointer px-3 py-1.5 border font-sans ${
+                  lang === l.code
+                    ? "border-terracotta text-terracotta font-semibold"
+                    : "border-transparent text-ink/60 hover:text-terracotta"
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
+          <nav className="flex flex-col items-center justify-center flex-grow gap-8 mt-6">
             {links.map(([label, href]) => (
               <a
                 key={href}
@@ -151,9 +211,9 @@ function Nav() {
             <a
               href="#partnership"
               onClick={() => setIsOpen(false)}
-              className="mt-6 inline-flex items-center gap-2 border border-forest-deep px-8 py-3.5 text-xs tracking-[0.25em] uppercase transition-all bg-forest-deep text-ivory hover:bg-forest"
+              className="mt-6 inline-flex items-center gap-2 border border-terracotta px-8 py-3.5 text-xs tracking-[0.25em] uppercase transition-all bg-terracotta text-ivory hover:bg-terracotta-deep"
             >
-              Become a Partner
+              {t("nav.becomePartner")}
             </a>
           </nav>
         </div>
@@ -165,6 +225,7 @@ function Nav() {
 /* ───────────────────────── Hero ───────────────────────── */
 
 function Hero() {
+  const { t } = useLanguage();
   const [bgUrl, setBgUrl] = useState(
     isSupabaseConfigured
       ? supabase.storage.from("images").getPublicUrl("herobg.webp").data.publicUrl
@@ -187,47 +248,43 @@ function Hero() {
       <div className="absolute inset-6 sm:inset-10 border border-ivory/20 pointer-events-none" />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 lg:px-10 pt-20 pb-24">
-        <p className="eyebrow text-brass fade-up">Marrakech · Morocco</p>
+        <p className="eyebrow text-brass fade-up">{t("hero.eyebrow")}</p>
         <h1 className="mt-4 max-w-4xl font-display text-5xl leading-[1.05] text-ivory sm:text-6xl lg:text-7xl fade-up">
-          Your Trusted Hospitality Partner in Marrakech
+          {t("hero.headline")}
         </h1>
         <div className="mt-8 max-w-2xl space-y-4 text-base sm:text-lg leading-relaxed text-ivory/85 font-light fade-up">
-          <p>
-            Nestled in the heart of Marrakech's historic Medina, just steps from Bahia Palace, El Badi Palace, and a short walk from Jemaa El-Fna Square, Riad Tajania offers an intimate boutique experience designed for discerning travelers.
-          </p>
-          <p>
-            With only four refined suites accommodating up to eight guests, we combine authentic Moroccan hospitality, personalized service, and the comfort of a luxury private residence. Whether welcoming couples, families, celebrations, or small groups, we create memorable stays tailored to every guest.
-          </p>
+          <p>{t("hero.para1")}</p>
+          <p>{t("hero.para2")}</p>
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-3 fade-up">
           <a
             href="#partnership"
-            className="group inline-flex items-center gap-3 bg-forest-deep px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory transition-all hover:bg-forest"
+            className="group inline-flex items-center gap-3 bg-terracotta px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory transition-all hover:bg-terracotta-deep"
           >
-            Become a Partner
+            {t("nav.becomePartner")}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
             href="#contact"
             className="inline-flex items-center gap-3 border border-ivory/60 px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory hover:bg-ivory hover:text-ink transition-all"
           >
-            Contact Us
+            {t("hero.contactUs")}
           </a>
         </div>
 
         <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-ivory/15 border border-ivory/15 max-w-5xl fade-up">
           {[
-            { icon: Award, label: "Luxury Boutique Riad" },
-            { icon: Users, label: "Exclusive Capacity – 8 Guests" },
-            { icon: Heart, label: "Personalized Hospitality" },
-            { icon: MapPin, label: "Prime Medina Location" },
-            { icon: ShieldCheck, label: "Trusted by International Travelers" },
-          ].map(({ icon: Icon, label }) => (
-            <div key={label} className="bg-ink/40 backdrop-blur-sm px-5 py-5 flex items-center gap-3">
+            { icon: Award, labelKey: "hero.highlights.luxury" },
+            { icon: Users, labelKey: "hero.highlights.capacity" },
+            { icon: Heart, labelKey: "hero.highlights.service" },
+            { icon: MapPin, labelKey: "hero.highlights.location" },
+            { icon: ShieldCheck, labelKey: "hero.highlights.trusted" },
+          ].map(({ icon: Icon, labelKey }) => (
+            <div key={labelKey} className="bg-ink/40 backdrop-blur-sm px-5 py-5 flex items-center gap-3">
               <Icon className="size-4 text-brass shrink-0" strokeWidth={1.4} />
               <span className="text-[11px] sm:text-xs tracking-[0.15em] uppercase text-ivory/90">
-                {label}
+                {t(labelKey)}
               </span>
             </div>
           ))}
@@ -235,7 +292,7 @@ function Hero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-ivory/60 text-[10px] tracking-[0.4em] uppercase">
-        Scroll
+        {t("hero.scroll")}
       </div>
     </section>
   );
@@ -285,44 +342,29 @@ function SectionHeader({
 /* ───────────────────────── About ───────────────────────── */
 
 function About() {
-  const values = [
-    "Authentic Moroccan Hospitality",
-    "Personalized Guest Experience",
-    "Luxury Boutique Atmosphere",
-    "Exceptional Service Standards",
-    "Prime Marrakech Location",
-    "Trusted Local Expertise",
-  ];
+  const { t } = useLanguage();
+  const values = t("about.values") as string[];
+
   return (
     <section id="about" className="relative py-28 lg:py-36 bg-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
         <div className="lg:col-span-7">
           <SectionHeader
-            eyebrow="The Riad"
+            eyebrow={t("about.eyebrow")}
             title={
               <>
-                Authentic Hospitality,
+                {t("about.titlePre")}
                 <br />
-                <em className="italic font-light text-terracotta">Personalized</em> Experiences.
+                <em className="italic font-light text-terracotta">{t("about.titleItalic")}</em>{t("about.titlePost")}
               </>
             }
           />
           <div className="mt-10 space-y-6 text-[15px] sm:text-base leading-relaxed text-ink/80 font-light max-w-xl">
-            <p>
-              Born from a passion for hospitality, design, and Moroccan culture, Riad Tajania is more than a boutique riad—it is a place where authentic local heritage meets refined international standards.
-            </p>
-            <p>
-              Originally conceived as a private residence, every detail of the riad has been carefully curated to create a unique atmosphere inspired by both Moroccan craftsmanship and European boutique hotel elegance. Traditional tadelakt finishes, handcrafted furnishings, Berber textiles, Moroccan marble, and carefully selected decorative pieces come together to create spaces that feel both authentic and timeless.
-            </p>
-            <p>
-              At the heart of Riad Tajania is a simple philosophy: exceptional hospitality begins with exceptional people.
-            </p>
-            <p>
-              Our team is consistently praised by guests for their warmth, attentiveness, and professionalism. Their dedication transforms a stay into a genuine experience, creating the personal connections and lasting memories that inspire guests to return and recommend us.
-            </p>
-            <p>
-              For travel professionals, this means confidence that every client will receive attentive care, personalized service, and an authentic Marrakech experience from arrival to departure.
-            </p>
+            <p>{t("about.p1")}</p>
+            <p>{t("about.p2")}</p>
+            <p>{t("about.p3")}</p>
+            <p>{t("about.p4")}</p>
+            <p>{t("about.p5")}</p>
           </div>
 
           <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 max-w-xl">
@@ -351,8 +393,8 @@ function About() {
           <div className="mt-8 flex items-center gap-4">
             <span className="font-display text-6xl text-terracotta leading-none">4</span>
             <div className="text-sm">
-              <p className="font-medium text-ink">Luxury Suites</p>
-              <p className="text-muted-foreground">Up to eight guests · privately yours</p>
+              <p className="font-medium text-ink">{t("about.suitesCount")}</p>
+              <p className="text-muted-foreground">{t("about.suitesDesc")}</p>
             </div>
           </div>
         </div>
@@ -364,17 +406,22 @@ function About() {
 /* ───────────────────────── Perfect For ───────────────────────── */
 
 function PerfectFor() {
-  const items = [
-    "Couples Getaways", "Honeymoon Escapes", "Family Holidays", "Friends Trips",
-    "Birthday Celebrations", "Small Private Groups", "Retreats", "Luxury Travelers",
-  ];
+  const { t } = useLanguage();
+  const items = t("perfectFor.occasions") as string[];
+
   return (
     <section className="relative py-28 lg:py-36 bg-sand/60">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeader
-          eyebrow="Perfect For"
-          title={<>Tailored to <em className="italic font-light text-terracotta">every</em> kind of journey.</>}
-          intro="From quiet romance to lively celebrations — Riad Tajania adapts gracefully to the spirit of each stay."
+          eyebrow={t("perfectFor.eyebrow")}
+          title={
+            <>
+              {t("perfectFor.titlePre")}
+              <em className="italic font-light text-terracotta">{t("perfectFor.titleItalic")}</em>
+              {t("perfectFor.titlePost")}
+            </>
+          }
+          intro={t("perfectFor.intro")}
           align="center"
         />
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
@@ -558,7 +605,8 @@ function ImageCarousel({
 }
 
 function SuiteCard({ suite, index }: { suite: any; index: number }) {
-  const folderName = suite.name.split(" ")[1].toLowerCase(); // "Suite Amal" -> "amal"
+  const folderName = suite.id;
+  const { t } = useLanguage();
 
   const { data: fetchedImages } = useQuery({
     queryKey: ["suiteImages", folderName],
@@ -581,12 +629,12 @@ function SuiteCard({ suite, index }: { suite: any; index: number }) {
       <div className="mt-6 flex items-baseline justify-between gap-4">
         <h3 className="font-display text-3xl text-ink">{suite.name}</h3>
         <span className="text-xs tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-1.5">
-          <Users className="size-3.5" strokeWidth={1.6} /> 2 Guests
+          <Users className="size-3.5" strokeWidth={1.6} /> {t("suites.guests")}
         </span>
       </div>
       <p className="mt-3 text-[15px] leading-relaxed text-ink/70 font-light">{suite.blurb}</p>
       <div className="mt-5 flex flex-wrap gap-2">
-        {["En-suite", "King bed", "Hand-crafted décor", "Air conditioning"].map((f) => (
+        {t("suites.features").map((f: string) => (
           <span
             key={f}
             className="text-[11px] tracking-[0.12em] uppercase border border-border px-3 py-1.5 text-ink/60"
@@ -600,29 +648,29 @@ function SuiteCard({ suite, index }: { suite: any; index: number }) {
 }
 
 function Suites() {
+  const { t } = useLanguage();
   const suites = [
-    { name: "Suite Amal", img: suiteAmalWebp, blurb: "A serene retreat draped in ivory linen and emerald accents — opening onto a private terrace." },
-    { name: "Suite Habiba", img: suiteHabibaWebp, blurb: "A romantic sanctuary with a hand-carved cedar headboard and the soft glow of brass lanterns." },
-    { name: "Suite Jasmine", img: suiteJasmineWebp, blurb: "Bright tadelakt walls, jasmine in bloom and the unhurried calm of a Marrakech morning." },
-    { name: "Suite Tajania", img: suiteTajaniaWebp, blurb: "Our signature suite — terracotta walls, layered textiles and timeless Moroccan grandeur." },
+    { id: "amal", name: t("suites.list.amal.name"), img: suiteAmalWebp, blurb: t("suites.list.amal.blurb") },
+    { id: "habiba", name: t("suites.list.habiba.name"), img: suiteHabibaWebp, blurb: t("suites.list.habiba.blurb") },
+    { id: "jasmine", name: t("suites.list.jasmine.name"), img: suiteJasmineWebp, blurb: t("suites.list.jasmine.blurb") },
+    { id: "tajania", name: t("suites.list.tajania.name"), img: suiteTajaniaWebp, blurb: t("suites.list.tajania.blurb") },
   ];
   return (
     <section id="suites" className="relative py-28 lg:py-36 bg-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <SectionHeader
-            eyebrow="Accommodation"
-            title={<>Our <em className="italic font-light text-terracotta">Suites</em>.</>}
+            eyebrow={t("suites.eyebrow")}
+            title={<>{t("suites.titlePre")}<em className="italic font-light text-terracotta">{t("suites.titleItalic")}</em>{t("suites.titlePost")}</>}
           />
           <p className="text-sm text-muted-foreground max-w-sm lg:text-right">
-            Four individually designed suites, each accommodating two guests in
-            quiet, considered luxury.
+            {t("suites.intro")}
           </p>
         </div>
 
         <div className="mt-16 grid md:grid-cols-2 gap-x-10 gap-y-20">
           {suites.map((s, i) => (
-            <SuiteCard key={s.name} suite={s} index={i} />
+            <SuiteCard key={s.id} suite={s} index={i} />
           ))}
         </div>
       </div>
@@ -652,6 +700,7 @@ const fetchGalleryImages = async (): Promise<{ src: string; label: string }[]> =
 };
 
 function CommonAreas() {
+  const { t } = useLanguage();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const { data: fetchedGallery } = useQuery({
@@ -703,15 +752,16 @@ function CommonAreas() {
     <section id="spaces" className="relative py-28 lg:py-36 bg-ink text-ivory">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeader
-          eyebrow="Common Areas"
+          eyebrow={t("commonAreas.eyebrow")}
           dark
           title={
             <>
-              Shared spaces designed for{" "}
-              <em className="italic font-light text-brass">relaxation</em>.
+              {t("commonAreas.titlePre")}
+              <em className="italic font-light text-brass">{t("commonAreas.titleItalic")}</em>
+              {t("commonAreas.titlePost")}
             </>
           }
-          intro="Patio fountains, a sunlit pool, a rooftop with views to the Atlas — every corner of Tajania invites slow, sensory moments."
+          intro={t("commonAreas.intro")}
         />
 
         <div className="mt-16 columns-1 md:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
@@ -844,39 +894,39 @@ const fetchReelsFromSupabase = async () => {
     });
 };
 
-const MOCK_REELS = [
+const getMockReels = (t: (key: string) => string) => [
   {
     id: "live-1",
     videoUrl: "https://zpxjkvdqkdcgpaatqxdh.supabase.co/storage/v1/object/public/videos/riadtajania.mp4",
-    caption: "Experience Riad Tajania. Authentic Moroccan hospitality meets personalized luxury.",
+    caption: t("reels.captions.experience"),
     views: "18.5k",
     likes: "942",
   },
   {
     id: "live-2",
     videoUrl: "https://zpxjkvdqkdcgpaatqxdh.supabase.co/storage/v1/object/public/videos/riadtajania-marrakech.mp4",
-    caption: "Marrakech life and courtyard calm. A quiet sanctuary in the heart of the Medina.",
+    caption: t("reels.captions.marrakech"),
     views: "14.2k",
     likes: "612",
   },
   {
     id: "live-3",
     videoUrl: "https://zpxjkvdqkdcgpaatqxdh.supabase.co/storage/v1/object/public/videos/riadtajania-rooftop.mp4",
-    caption: "Sunset views over the rooftop terrace. Unwinding above the red city.",
+    caption: t("reels.captions.sunset"),
     views: "22.8k",
     likes: "1,154",
   },
   {
     id: "live-4",
     videoUrl: "https://zpxjkvdqkdcgpaatqxdh.supabase.co/storage/v1/object/public/videos/riadtajania-suite.mp4",
-    caption: "Indulge in our luxury suites. Individually designed, privately yours.",
+    caption: t("reels.captions.suites"),
     views: "11.6k",
     likes: "580",
   },
   {
     id: "live-5",
     videoUrl: "https://zpxjkvdqkdcgpaatqxdh.supabase.co/storage/v1/object/public/videos/riadtajania_breakfast.mp4",
-    caption: "Traditional Moroccan breakfast served daily in the courtyard or rooftop.",
+    caption: t("reels.captions.breakfast"),
     views: "19.1k",
     likes: "876",
   },
@@ -887,6 +937,7 @@ function InstagramReels() {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const { lang, t } = useLanguage();
 
   // TanStack Query to fetch reels
   const { data: reelsData } = useQuery({
@@ -896,7 +947,8 @@ function InstagramReels() {
   });
 
   // Use fetched data if present and not empty, otherwise fallback to mock data
-  const reels = (reelsData && reelsData.length > 0) ? reelsData : MOCK_REELS;
+  const mockReels = getMockReels(t);
+  const reels = (reelsData && reelsData.length > 0) ? reelsData : mockReels;
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -961,16 +1013,18 @@ function InstagramReels() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
           <SectionHeader
-            eyebrow="Tajania Moments"
+            eyebrow={t("reels.eyebrow")}
             dark
             title={
               <>
-                Bespoke <em className="italic font-light text-brass">lifestyle</em> in motion.
+                {t("reels.titlePre")}
+                <em className="italic font-light text-brass">{t("reels.titleItalic")}</em>
+                {t("reels.titlePost")}
               </>
             }
           />
           <p className="text-sm text-ivory/60 max-w-sm lg:text-right">
-            Explore our curated stories, captured moments, and details that define Riad Tajania.
+            {t("reels.intro")}
           </p>
         </div>
 
@@ -1072,7 +1126,7 @@ function InstagramReels() {
 
                 {/* Video Caption */}
                 <div className="space-y-2">
-                  <p className="text-[11px] tracking-widest text-brass uppercase font-sans">Description</p>
+                  <p className="text-[11px] tracking-widest text-brass uppercase font-sans">{t("reels.description")}</p>
                   <p className="text-sm font-light leading-relaxed text-ivory/80">
                     {reels[activeReelIndex].caption}
                   </p>
@@ -1080,10 +1134,10 @@ function InstagramReels() {
 
                 {/* Mock Instagram engagements */}
                 <div className="space-y-2">
-                  <p className="text-[11px] tracking-widest text-brass uppercase font-sans">Engagement</p>
+                  <p className="text-[11px] tracking-widest text-brass uppercase font-sans">{t("reels.engagement")}</p>
                   <div className="flex items-center gap-6 text-xs text-ivory/70">
-                    <span className="flex items-center gap-1.5"><Heart className="size-4 text-brass" /> {reels[activeReelIndex].likes} likes</span>
-                    <span className="flex items-center gap-1.5"><Sparkles className="size-4 text-brass" /> {reels[activeReelIndex].views} views</span>
+                    <span className="flex items-center gap-1.5"><Heart className="size-4 text-brass" /> {reels[activeReelIndex].likes} {t("reels.likes")}</span>
+                    <span className="flex items-center gap-1.5"><Sparkles className="size-4 text-brass" /> {reels[activeReelIndex].views} {t("reels.views")}</span>
                   </div>
                 </div>
               </div>
@@ -1093,12 +1147,12 @@ function InstagramReels() {
                 <a
                   href="#contact"
                   onClick={() => setActiveReelIndex(null)}
-                  className="w-full text-center block bg-forest-deep hover:bg-forest text-ivory uppercase tracking-[0.2em] text-[10px] py-3 transition-colors font-medium border border-forest-deep"
+                  className="w-full text-center block bg-terracotta hover:bg-terracotta-deep text-ivory uppercase tracking-[0.2em] text-[10px] py-3 transition-colors font-medium border border-terracotta"
                 >
-                  Become a Partner
+                  {t("nav.becomePartner")}
                 </a>
                 <p className="text-[9px] tracking-wider text-center text-ivory/40 uppercase">
-                  Instagram Stories & Reels
+                  {t("reels.source")}
                 </p>
               </div>
             </div>
@@ -1133,6 +1187,7 @@ function ReelCard({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { lang, t } = useLanguage();
 
   const handleMouseEnter = () => {
     if (videoRef.current) {
@@ -1178,9 +1233,9 @@ function ReelCard({
       {/* Caption & View Count Overlay */}
       <div className="absolute bottom-6 left-6 right-6 text-ivory pointer-events-none transition-transform duration-500 group-hover:translate-y-[-4px]">
         <div className="flex items-center gap-2 text-[9px] tracking-widest text-brass uppercase font-sans mb-2">
-          <span>Instagram Reel</span>
+          <span>{lang === "fr" || lang === "it" ? "Reel Instagram" : "Instagram Reel"}</span>
           <span className="size-1 rounded-full bg-brass/60" />
-          <span>{views} views</span>
+          <span>{views} {t("reels.views")}</span>
         </div>
         <p className="font-display text-lg sm:text-xl leading-snug line-clamp-2">{caption}</p>
       </div>
@@ -1191,35 +1246,31 @@ function ReelCard({
 /* ───────────────────────── Services ───────────────────────── */
 
 function Services() {
-  const services = [
-    { icon: Plane, title: "Airport Transfers", body: "Private chauffeured arrivals and departures, day or night." },
-    { icon: Compass, title: "Agafay Desert", body: "Sunset camps, camel rides and starlit dinners in the stone desert." },
-    { icon: Mountain, title: "Atlas Mountains", body: "Day trips and overnights into the Berber high valleys." },
-    { icon: ChefHat, title: "Cooking Classes", body: "Hands-on tagine and pastry workshops with our chef." },
-    { icon: MapIcon, title: "Guided Medina Tours", body: "Souks, hidden palaces and craftsmen, walked with a local expert." },
-    { icon: Sparkles, title: "Customized Itineraries", body: "Multi-day Morocco journeys assembled around your client." },
-    { icon: PartyPopper, title: "Celebration Arrangements", body: "Birthdays, proposals, intimate weddings — staged with care." },
-    { icon: Heart, title: "Local Recommendations", body: "Quiet addresses our concierge keeps for trusted guests." },
-  ];
+  const { t } = useLanguage();
+  const services = t("services.list") as { title: string; body: string }[];
+  
   return (
     <section id="experiences" className="relative py-28 lg:py-36 bg-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeader
-          eyebrow="Services & Experiences"
-          title={<>Beyond <em className="italic font-light text-terracotta">accommodation</em>.</>}
-          intro="We build complete Marrakech experiences for your clients — coordinated from a single, responsive point of contact."
+          eyebrow={t("services.eyebrow")}
+          title={<>{t("services.titlePre")}<em className="italic font-light text-terracotta">{t("services.titleItalic")}</em>{t("services.titlePost")}</>}
+          intro={t("services.intro")}
         />
         <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
-          {services.map(({ icon: Icon, title, body }) => (
-            <div
-              key={title}
-              className="bg-background p-8 hover:bg-sand/40 transition-colors group"
-            >
-              <Icon className="size-7 text-terracotta" strokeWidth={1.3} />
-              <h3 className="mt-6 font-display text-2xl text-ink">{title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-ink/65 font-light">{body}</p>
-            </div>
-          ))}
+          {services.map(({ title, body }, index) => {
+            const Icon = [Plane, Compass, Mountain, ChefHat, MapIcon, Sparkles, PartyPopper, Heart][index];
+            return (
+              <div
+                key={title}
+                className="bg-background p-8 hover:bg-sand/40 transition-colors group"
+              >
+                <Icon className="size-7 text-terracotta" strokeWidth={1.3} />
+                <h3 className="mt-6 font-display text-2xl text-ink">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink/65 font-light">{body}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1229,16 +1280,9 @@ function Services() {
 /* ───────────────────────── Partnership ───────────────────────── */
 
 function Partnership() {
-  const benefits = [
-    "Competitive commission structure",
-    "Preferential agency rates",
-    "Dedicated support before and during each stay",
-    "Fast and responsive communication",
-    "Assistance with transfers, excursions, and tailored itineraries",
-    "Exclusive use options for small groups and private events",
-    "Local destination expertise and trusted supplier network",
-    "Consistently outstanding guest feedback",
-  ];
+  const { t } = useLanguage();
+  const benefits = t("partnership.benefits") as string[];
+
   return (
     <section id="partnership" className="relative py-28 lg:py-36 overflow-hidden">
       <div className="absolute inset-0">
@@ -1249,39 +1293,34 @@ function Partnership() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         <div className="lg:col-span-6 text-ivory">
           <SectionHeader
-            eyebrow="Partnership"
+            eyebrow={t("partnership.eyebrow")}
             dark
             title={
               <>
-                Let's Create <em className="italic font-light text-brass">Exceptional</em>{" "}
-                Experiences Together.
+                {t("partnership.titlePre")}
+                <em className="italic font-light text-brass">{t("partnership.titleItalic")}</em>{" "}
+                {t("partnership.titlePost")}
               </>
             }
           />
           <div className="mt-8 space-y-4 text-[15px] sm:text-base leading-relaxed text-ivory/80 font-light">
-            <p>
-              At Riad Tajania, we believe successful partnerships are built on trust, responsiveness, and shared commitment to guest satisfaction.
-            </p>
-            <p>
-              We actively collaborate with travel agencies, tour operators, luxury travel advisors, DMCs, retreat organizers, and event planners seeking a reliable hospitality partner in Marrakech.
-            </p>
-            <p>
-              Our intimate size allows us to offer a highly personalized experience while remaining flexible enough to accommodate individual travelers, families, celebrations, and exclusive private buyouts of the entire riad.
-            </p>
+            <p>{t("partnership.p1")}</p>
+            <p>{t("partnership.p2")}</p>
+            <p>{t("partnership.p3")}</p>
           </div>
           <div className="mt-10 flex flex-wrap gap-3">
             <a
               href="#contact"
-              className="group inline-flex items-center gap-3 bg-forest-deep px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory hover:bg-forest transition-all"
+              className="group inline-flex items-center gap-3 bg-terracotta px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory hover:bg-terracotta-deep transition-all"
             >
-              Discuss Partnership
+              {t("partnership.discuss")}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </a>
             <a
               href="mailto:riadtajania@hotmail.com"
               className="inline-flex items-center gap-3 border border-ivory/60 px-7 py-4 text-xs tracking-[0.25em] uppercase text-ivory hover:bg-ivory hover:text-ink transition-all"
             >
-              Request Rates
+              {t("partnership.requestRates")}
             </a>
           </div>
         </div>
@@ -1300,14 +1339,10 @@ function Partnership() {
           </ul>
 
           <div className="space-y-4 text-sm leading-relaxed text-ivory/80 font-light bg-forest-deep/30 border border-ivory/10 p-6 backdrop-blur-sm">
-            <p>
-              Beyond accommodation, we help create complete Marrakech experiences through airport transfers, Atlas Mountains excursions, Agafay Desert experiences, guided Medina tours, cooking classes, and personalized celebrations.
-            </p>
-            <p>
-              Our objective is simple: to make your clients feel genuinely welcomed while making your work effortless.
-            </p>
+            <p>{t("partnership.wrap1")}</p>
+            <p>{t("partnership.wrap2")}</p>
             <p className="font-display text-lg text-brass italic">
-              Whether you are arranging a romantic escape, a family holiday, a private group stay, or a bespoke Moroccan itinerary, Riad Tajania is ready to be your trusted local partner in Marrakech.
+              {t("partnership.quote")}
             </p>
           </div>
         </div>
@@ -1319,35 +1354,37 @@ function Partnership() {
 /* ───────────────────────── Why Partner ───────────────────────── */
 
 function WhyPartner() {
-  const reasons = [
-    { icon: Star, title: "Exceptional Reviews" },
-    { icon: Heart, title: "Personalized Service" },
-    { icon: Users, title: "Dedicated Team" },
-    { icon: Sparkles, title: "Authentic Moroccan Experience" },
-    { icon: Award, title: "Luxury Boutique Environment" },
-    { icon: Compass, title: "Small Group Expertise" },
-    { icon: MapPin, title: "Local Destination Knowledge" },
-    { icon: ShieldCheck, title: "Trusted Hospitality Partner" },
-  ];
+  const { t } = useLanguage();
+  const reasons = t("whyPartner.reasons") as string[];
+
   return (
     <section className="py-28 lg:py-36 bg-background">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeader
-          eyebrow="Why Tajania"
+          eyebrow={t("whyPartner.eyebrow")}
           align="center"
-          title={<>Eight reasons travel professionals <em className="italic font-light text-terracotta">return</em>.</>}
+          title={
+            <>
+              {t("whyPartner.titlePre")}
+              <em className="italic font-light text-terracotta">{t("whyPartner.titleItalic")}</em>
+              {t("whyPartner.titlePost")}
+            </>
+          }
         />
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
-          {reasons.map(({ icon: Icon, title }) => (
-            <div key={title} className="flex flex-col items-center text-center">
-              <div className="size-14 rounded-full border border-terracotta/40 flex items-center justify-center">
-                <Icon className="size-6 text-terracotta" strokeWidth={1.3} />
+          {reasons.map((title, index) => {
+            const Icon = [Star, Heart, Users, Sparkles, Award, Compass, MapPin, ShieldCheck][index];
+            return (
+              <div key={title} className="flex flex-col items-center text-center">
+                <div className="size-14 rounded-full border border-terracotta/40 flex items-center justify-center">
+                  <Icon className="size-6 text-terracotta" strokeWidth={1.3} />
+                </div>
+                <p className="mt-5 font-display text-lg text-ink leading-snug max-w-[160px]">
+                  {title}
+                </p>
               </div>
-              <p className="mt-5 font-display text-lg text-ink leading-snug max-w-[160px]">
-                {title}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1357,14 +1394,21 @@ function WhyPartner() {
 /* ───────────────────────── Testimonials ───────────────────────── */
 
 function Testimonials() {
+  const { t } = useLanguage();
   return (
     <section className="relative py-28 lg:py-36 bg-sand/70">
       <div className="mx-auto max-w-5xl px-6 lg:px-10 text-center">
         <SectionHeader
-          eyebrow="Guest Voices"
+          eyebrow={t("testimonials.eyebrow")}
           align="center"
-          title={<>Hospitality, <em className="italic font-light text-terracotta">in their words</em>.</>}
-          intro="A dedicated space awaiting the voices of guests, travel agencies and tour operators who have stayed with us."
+          title={
+            <>
+              {t("testimonials.titlePre")}
+              <em className="italic font-light text-terracotta">{t("testimonials.titleItalic")}</em>
+              {t("testimonials.titlePost")}
+            </>
+          }
+          intro={t("testimonials.intro")}
         />
 
         <div className="mt-16 grid md:grid-cols-3 gap-px bg-border">
@@ -1375,8 +1419,7 @@ function Testimonials() {
             >
               <Quote className="size-7 text-terracotta" strokeWidth={1.2} />
               <blockquote className="mt-6 font-display text-lg italic text-ink/70 leading-relaxed min-h-[7rem]">
-                "Testimonial reserved for a future guest review — to highlight
-                the warmth of our team and the care of their stay."
+                "{t("testimonials.body")}"
               </blockquote>
               <div className="mt-8 flex items-center gap-1 text-brass">
                 {Array.from({ length: 5 }).map((_, k) => (
@@ -1384,7 +1427,7 @@ function Testimonials() {
                 ))}
               </div>
               <figcaption className="mt-4 text-[11px] tracking-[0.25em] uppercase text-muted-foreground">
-                Guest · Future Review
+                {t("testimonials.caption")}
               </figcaption>
             </figure>
           ))}
@@ -1397,20 +1440,27 @@ function Testimonials() {
 /* ───────────────────────── Contact ───────────────────────── */
 
 function Contact() {
+  const { t } = useLanguage();
   const items = [
-    { icon: Phone, label: "Phone", value: "+212 656 043 079", href: "tel:+212656043079" },
-    { icon: MessageCircle, label: "WhatsApp", value: "+212 656 043 079", href: "https://wa.me/212656043079" },
-    { icon: Mail, label: "Email", value: "riadtajania@hotmail.com", href: "mailto:riadtajania@hotmail.com" },
-    { icon: Instagram, label: "Instagram", value: "@riadtajania", href: "https://instagram.com/riadtajania" },
+    { icon: Phone, label: t("contact.phone"), value: "+212 656 043 079", href: "tel:+212656043079" },
+    { icon: MessageCircle, label: t("contact.whatsapp"), value: "+212 656 043 079", href: "https://wa.me/212656043079" },
+    { icon: Mail, label: t("contact.email"), value: "riadtajania@hotmail.com", href: "mailto:riadtajania@hotmail.com" },
+    { icon: Instagram, label: t("contact.instagram"), value: "@riadtajania", href: "https://instagram.com/riadtajania" },
   ];
   return (
     <section id="contact" className="py-28 lg:py-36 bg-background">
       <div className="mx-auto max-w-6xl px-6 lg:px-10">
         <SectionHeader
-          eyebrow="Get in touch"
+          eyebrow={t("contact.eyebrow")}
           align="center"
-          title={<>Partner <em className="italic font-light text-terracotta">with us</em>.</>}
-          intro="Contact us to discuss partnership opportunities, commission structures, and customized travel experiences for your clients."
+          title={
+            <>
+              {t("contact.titlePre")}
+              <em className="italic font-light text-terracotta">{t("contact.titleItalic")}</em>
+              {t("contact.titlePost")}
+            </>
+          }
+          intro={t("contact.intro")}
         />
 
         <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
@@ -1438,10 +1488,11 @@ function Contact() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-ink text-ivory/50 py-8 border-t border-ivory/10">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 text-center text-[11px] tracking-[0.22em] uppercase">
-        <p>© 2026 Riad Tajania. All rights reserved.</p>
+        <p>{t("footer.copyright")}</p>
       </div>
     </footer>
   );
