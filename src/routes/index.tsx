@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   Heart, Users, MapPin, Sparkles, Phone, Mail, MessageCircle, Instagram,
   Award, Handshake, ShieldCheck, Compass, ChefHat, Mountain, Plane,
-  Map as MapIcon, PartyPopper, Star, ArrowRight, Quote, X, ChevronLeft, ChevronRight,
+  Map as MapIcon, PartyPopper, Star, ArrowRight, Quote, X, ChevronLeft, ChevronRight, Menu,
   Play, Volume2, VolumeX, Pause,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -68,6 +68,7 @@ function Index() {
 /* ───────────────────────── Nav ───────────────────────── */
 
 function Nav() {
+  const [isOpen, setIsOpen] = useState(false);
   const links = [
     ["About", "#about"],
     ["Suites", "#suites"],
@@ -98,13 +99,65 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <a
-          href="#partnership"
-          className="hidden md:inline-flex items-center gap-2 border border-forest-deep px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-all text-forest-deep hover:bg-forest-deep hover:text-ivory"
-        >
-          Become a Partner
-        </a>
+        
+        <div className="flex items-center gap-4">
+          <a
+            href="#partnership"
+            className="hidden md:inline-flex items-center gap-2 border border-forest-deep px-5 py-2.5 text-[11px] tracking-[0.25em] uppercase transition-all text-forest-deep hover:bg-forest-deep hover:text-ivory"
+          >
+            Become a Partner
+          </a>
+          
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 lg:hidden text-ink hover:text-terracotta focus:outline-none transition-colors cursor-pointer"
+            aria-label="Toggle Menu"
+          >
+            <Menu className="size-6" />
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-white z-[100] flex flex-col p-6 animate-in fade-in slide-in-from-top-5 duration-300">
+          <div className="flex items-center justify-between">
+            <a href="#top" onClick={() => setIsOpen(false)} className="flex items-center">
+              <img
+                src={logoImg}
+                alt="Riad Tajania Logo"
+                className="h-20 w-auto object-contain"
+              />
+            </a>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 text-ink hover:text-terracotta focus:outline-none transition-colors cursor-pointer"
+              aria-label="Close Menu"
+            >
+              <X className="size-6" />
+            </button>
+          </div>
+          <nav className="flex flex-col items-center justify-center flex-grow gap-8 mt-12">
+            {links.map(([label, href]) => (
+              <a
+                key={href}
+                href={href}
+                onClick={() => setIsOpen(false)}
+                className="text-xl tracking-[0.25em] uppercase text-ink hover:text-terracotta transition-colors"
+              >
+                {label}
+              </a>
+            ))}
+            <a
+              href="#partnership"
+              onClick={() => setIsOpen(false)}
+              className="mt-6 inline-flex items-center gap-2 border border-forest-deep px-8 py-3.5 text-xs tracking-[0.25em] uppercase transition-all bg-forest-deep text-ivory hover:bg-forest"
+            >
+              Become a Partner
+            </a>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -469,14 +522,14 @@ function ImageCarousel({
         <>
           <button
             onClick={handlePrev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-25 p-2 bg-ink/40 hover:bg-terracotta border border-ivory/10 text-ivory rounded-full transition-all duration-300 backdrop-blur-sm cursor-pointer opacity-0 group-hover/carousel:opacity-100"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-25 p-2 bg-ink/40 hover:bg-terracotta border border-ivory/10 text-ivory rounded-full transition-all duration-300 backdrop-blur-sm cursor-pointer opacity-100 lg:opacity-0 lg:group-hover/carousel:opacity-100"
             aria-label="Previous slide"
           >
             <ChevronLeft className="size-4" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-25 p-2 bg-ink/40 hover:bg-terracotta border border-ivory/10 text-ivory rounded-full transition-all duration-300 backdrop-blur-sm cursor-pointer opacity-0 group-hover/carousel:opacity-100"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-25 p-2 bg-ink/40 hover:bg-terracotta border border-ivory/10 text-ivory rounded-full transition-all duration-300 backdrop-blur-sm cursor-pointer opacity-100 lg:opacity-0 lg:group-hover/carousel:opacity-100"
             aria-label="Next slide"
           >
             <ChevronRight className="size-4" />
