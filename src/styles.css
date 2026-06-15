@@ -69,11 +69,11 @@
   --ivory: oklch(0.975 0.012 80);
   --sand: oklch(0.92 0.025 75);
   --sand-deep: oklch(0.84 0.04 72);
-  --terracotta: oklch(0.62 0.135 38);
-  --terracotta-deep: oklch(0.48 0.13 35);
+  --terracotta: oklch(0.712 0.088 81.5); /* Gold matching the logo #c4ab7e */
+  --terracotta-deep: oklch(0.61 0.08 78);  /* Deeper gold/bronze for hover states */
   --forest: oklch(0.42 0.06 155);
   --forest-deep: oklch(0.30 0.05 158);
-  --brass: oklch(0.72 0.115 78);
+  --brass: oklch(0.712 0.088 81.5);      /* Gold matching the logo #c4ab7e */
   --ink: oklch(0.22 0.025 60);
 
   /* Semantic */
