@@ -206,8 +206,8 @@ This document outlines the complete textual content, titles, subtitles, and stru
 *   **Introductory Text**: 
     > Contact us to discuss partnership opportunities, commission structures, and customized travel experiences for your clients.
 *   **Contact Information Channels**:
-    *   **Phone**: `+212 656 043 079`
-    *   **WhatsApp**: `+212 656 043 079`
+    *   **Phone**: `+212 697 506066`
+    *   **WhatsApp**: `+212 697 506066`
     *   **Email**: `riadtajania@hotmail.com`
     *   **Instagram**: `@riadtajania`
 

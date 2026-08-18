@@ -1442,8 +1442,8 @@ function Testimonials() {
 function Contact() {
   const { t } = useLanguage();
   const items = [
-    { icon: Phone, label: t("contact.phone"), value: "+212 656 043 079", href: "tel:+212656043079" },
-    { icon: MessageCircle, label: t("contact.whatsapp"), value: "+212 656 043 079", href: "https://wa.me/212656043079" },
+    { icon: Phone, label: t("contact.phone"), value: "+212 697 506066", href: "tel:+212697506066" },
+    { icon: MessageCircle, label: t("contact.whatsapp"), value: "+212 697 506066", href: "https://wa.me/212697506066" },
     { icon: Mail, label: t("contact.email"), value: "riadtajania@hotmail.com", href: "mailto:riadtajania@hotmail.com" },
     { icon: Instagram, label: t("contact.instagram"), value: "@riadtajania", href: "https://instagram.com/riadtajania" },
   ];

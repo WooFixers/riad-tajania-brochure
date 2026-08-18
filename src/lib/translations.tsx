@@ -448,7 +448,7 @@ export const translations = {
       p1: "Nato dalla passione per l'ospitalità, il design e la cultura marocchina, il Riad Tajania è più di un semplice riad boutique: è un luogo in cui l'autentico patrimonio locale incontra raffinati standard internazionali.",
       p2: "Originariamente concepito come residenza privata, ogni dettaglio del riad è stato curato con attenzione per creare un'atmosfera unica ispirata sia all'artigianato marocchino che all'eleganza dei boutique hotel europei. Finiture tradizionali in tadelakt, arredi artigianali, tessuti berberi, marmo marocchino e pezzi decorativi accuratamente selezionati si uniscono per creare spazi che sembrano autentici e senza tempo.",
       p3: "Al cuore del Riad Tajania c'è una filosofia semplice: l'ospitalità eccezionale inizia con persone eccezionali.",
-      p4: "Il nostro tempo riceve costantemente elogi dagli ospiti per il calore, l'attenzione e la professionalità. La loro dedizione trasforma un soggiorno in una vera e propria esperienza, creando legami personali e ricordi duraturi che ispirano gli ospiti a tornare e a consigliarci.",
+      p4: "Il nostro team riceve costantemente elogi dagli ospiti per il calore, l'attenzione e la professionalità. La sua dedizione trasforma un soggiorno in una vera e propria esperienza, creando legami personali e ricordi duraturi che ispirano gli ospiti a tornare e a consigliarci.",
       p5: "Per i professionisti del viaggio, questo si traduce nella certezza che ogni cliente riceverà cure attente, servizio personalizzato e un'autentica esperienza di Marrakech dall'arrivo alla partenza.",
       values: [
         "Autentica Ospitalità Marocchina",

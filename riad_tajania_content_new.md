@@ -70,5 +70,3 @@ Our objective is simple: to make your clients feel genuinely welcomed while maki
 
 Whether you are arranging a romantic escape, a family holiday, a private group stay, or a bespoke Moroccan itinerary, Riad Tajania is ready to be your trusted local partner in Marrakech.
 
-
-
