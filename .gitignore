@@ -7,35 +7,63 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Build Outputs & Serverless Caches
 dist
 dist-ssr
 .output
 .vinxi
-.tanstack/**
+.tanstack
 .nitro
-*.local
+.turbo
+.cache
+*.tsbuildinfo
 
-# Wrangler / Cloudflare
+# Cloud & Hosting Providers
+.vercel
 .wrangler/
 .dev.vars
+.netlify
 
-# Editor directories and files
+# Environment Variables
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# IDE & Editor Files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swo
 
-# Vercel build output
-.vercel
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
 
-# Environment variables
-.env
-.env.*
-!.env.example
+# Testing & Coverage
+coverage/
+.nyc_output/
 
+# Temporary Files
+*.tmp
+*.temp
